@@ -1,0 +1,23 @@
+{
+  "name": "interactive-data-visualization",
+  "version": "1.0.0",
+  "description": "studying [Interactive Data Visualization for the Web](http://chimera.labs.oreilly.com/books/1230000000345)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sergeyvrn/interactive-data-visualization.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sergeyvrn/interactive-data-visualization/issues"
+  },
+  "homepage": "https://github.com/sergeyvrn/interactive-data-visualization#readme",
+  "dependencies": {
+    "d3": "^3.5.17"
+  }
+}
