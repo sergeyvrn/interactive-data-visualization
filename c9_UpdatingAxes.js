@@ -1,16 +1,4 @@
-// const dataSet = [
-//     [5, 20],
-//     [480, 90],
-//     [250, 50],
-//     [100, 33],
-//     [330, 95],
-//     [410, 12],
-//     [475, 44],
-//     [25, 67],
-//     [85, 21],
-//     [220, 88],
-//     [600, 150]
-// ];
+d3 = d3 || {};
 
 var dataSet = [];
 var numDataPoints = 50;
@@ -25,6 +13,7 @@ for (var i = 0; i < numDataPoints; i++) {
 const h = 300;
 const w = 500;
 const padding = 30;
+
 const xScale = d3.scale.linear()
     .domain([0, d3.max(dataSet, d => d[0])])
     .range([padding, w - padding * 2]);
@@ -50,18 +39,6 @@ svg.selectAll("circle")
         cy: d => yScale(d[1]),
         r: d => rScale(d[1])
     });
-// svg.selectAll("text")
-//     .data(dataSet)
-//     .enter()
-//     .append("text")
-//     .text(d => d[0] + "," + d[1])
-//     .attr({
-//         x: d => xScale(d[0]),
-//         y: d => yScale(d[1]),
-//         "font-family": "sans-serif",
-//         "font-size": "11px",
-//         "fill": "red"
-//     });
 
 const xAxis = d3.svg.axis()
     .scale(xScale)
