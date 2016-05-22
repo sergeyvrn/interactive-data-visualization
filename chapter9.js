@@ -126,7 +126,7 @@ d3.select("#add")
 const removeDuration = 500;
 d3.select("#remove")
     .on("click", () => {
-        dataSet.shift();
+        dataSet.pop();
         svg.selectAll("rect").data(dataSet).exit()
             .transition().duration(removeDuration)
             .attr("x", w)
