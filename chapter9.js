@@ -1,9 +1,13 @@
 var dataSet = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
     11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
 
-const w = 25 * 22;
-const h = 150;
-const barPadding = 2;
+const w = 600;
+const h = 250;
+
+const xScale = d3.scale.ordinal()
+    .domain(d3.range(dataSet.length))
+    .rangeRoundBands([0,w], 0.05);
+
 const svg = d3.select("body")
     .append("svg")
     .attr("width", w)
@@ -13,9 +17,9 @@ svg.selectAll("rect")
     .enter()
     .append("rect")
     .attr({
-        x: (d, i) => i * (w / dataSet.length),
+        x: (d, i) => xScale(i),
         y: d => h - (d * 4),
-        width: w / dataSet.length - barPadding,
+        width: xScale.rangeBand(),
         height: d => d * 4,
         fill: d => "rgb(0, 0, " + (d * 10) + ")"
     });
