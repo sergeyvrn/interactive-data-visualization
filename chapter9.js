@@ -44,8 +44,12 @@ svg.selectAll("text")
 
 d3.select("p")
     .on("click", () => {
-        dataSet = [11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
-            5, 10, 13, 19, 21, 25, 22, 18, 15, 13];
+        const dataLength = dataSet.length;
+        dataSet = [];
+        for (let i = 0; i < dataLength; i++) {
+            var newNumber = Math.floor(Math.random() * 25);
+            dataSet.push(newNumber);
+        }
 
         svg.selectAll("rect")
             .data(dataSet)
