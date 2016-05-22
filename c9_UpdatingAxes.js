@@ -56,8 +56,24 @@ svg.append("g")
     })
     .call(yAxis);
 
-svg.selectAll("circle")
-    .data(dataSet).enter()
+svg.append("clipPath")
+    .attr({id: "chart-area"})
+    .append("rect")
+    .attr({
+        x: padding,
+        y: padding,
+        width: w - padding * 3,
+        height: h - padding * 2
+    });
+
+svg.append("g")
+    .attr({
+        id: "circles",
+        "clip-path": "url(#chart-area)"
+    })
+    .selectAll("circle")
+    .data(dataSet)
+    .enter()
     .append("circle")
     .attr({
         cx: d => xScale(d[0]),
