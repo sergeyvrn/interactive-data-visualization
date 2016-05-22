@@ -47,9 +47,15 @@ d3.select("p")
         const dataLength = dataSet.length;
         dataSet = [];
         for (let i = 0; i < dataLength; i++) {
-            var newNumber = Math.floor(Math.random() * 25);
+            const maxValue = 100;
+            var newNumber = Math.floor(Math.random() * maxValue);
             dataSet.push(newNumber);
         }
+
+        yScale.domain([0, d3.max(dataSet)]);
+        const colorScale = d3.scale.linear()
+            .domain([0, d3.max(dataSet)])
+            .rangeRound([0, 255]);
 
         svg.selectAll("rect")
             .data(dataSet)
@@ -62,7 +68,7 @@ d3.select("p")
                 y: d => h - yScale(d),
                 width: xScale.rangeBand(),
                 height: d => yScale(d),
-                fill: d => "rgb(0, 0, " + (d * 10) + ")"
+                fill: d => "rgb(0, 0, " + colorScale(d) + ")"
             });
         svg.selectAll("text")
             .data(dataSet)
