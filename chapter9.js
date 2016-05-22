@@ -149,13 +149,13 @@ d3.select("#add")
 const removeDuration = 500;
 d3.select("#remove")
     .on("click", () => {
-        dataSet.pop();
-        svg.selectAll("rect").data(dataSet).exit()
+        dataSet.shift();
+        svg.selectAll("rect").data(dataSet, d => d.key).exit()
             .transition().duration(removeDuration)
-            .attr("x", w)
+            .attr("x", -xScale.rangeBand())
             .remove();
-        svg.selectAll("text").data(dataSet).exit()
+        svg.selectAll("text").data(dataSet, d => d.key).exit()
             .transition().duration(removeDuration)
-            .attr("x", w + xScale.rangeBand() / 2)
+            .attr("x", -xScale.rangeBand() / 2)
             .remove();
     });
