@@ -78,7 +78,10 @@ function newNumber() {
 
 d3.select("#update")
     .on("click", () => {
-        dataSet = dataSet.map(newNumber);
+        dataSet = dataSet.map(d => {
+            d.value = Math.floor(Math.random() * maxValue);
+            return d;
+        });
 
         yScale.domain([0, d3.max(dataSet, d => d.value)]);
         colorScale.domain([0, d3.max(dataSet, d => d.value)]);
@@ -96,12 +99,14 @@ d3.select("#update")
                 height: d => yScale(d.value),
                 fill: d => "rgb(0, 0, " + colorScale(d.value) + ")"
             });
+
         svg.selectAll("text")
             .data(dataSet)
             .transition()
             .delay((d, i) => i / dataSet.length * 1000)
             .duration(500)
             .ease("linear")
+            .text(d => d.value)
             .attr({
                 x: (d, i) => xScale(i) + xScale.rangeBand() / 2,
                 y: d => h - yScale(d.value) + 14
@@ -128,7 +133,10 @@ d3.select("#add")
         bars.transition().duration(addDuration)
             .attr({
                 x: (d, i) => xScale(i),
-                width: xScale.rangeBand()
+                y: d => h - yScale(d.value),
+                width: xScale.rangeBand(),
+                height: d => yScale(d.value),
+                fill: d => "rgb(0, 0, " + colorScale(d.value) + ")"
             });
 
         const labels = svg.selectAll("text").data(dataSet);
@@ -150,12 +158,38 @@ const removeDuration = 500;
 d3.select("#remove")
     .on("click", () => {
         dataSet.shift();
-        svg.selectAll("rect").data(dataSet, d => d.key).exit()
+
+        xScale.domain(d3.range((dataSet.length)));
+        yScale.domain([0, d3.max(dataSet, d => d.value)]);
+
+        const bars = svg.selectAll("rect").data(dataSet, d => d.key);
+        bars.exit()
             .transition().duration(removeDuration)
-            .attr("x", -xScale.rangeBand())
+            .attr({
+                x: -xScale.rangeBand(),
+                y: d => h - yScale(d.value),
+                width: xScale.rangeBand(),
+                height: d => yScale(d.value),
+                fill: d => "rgb(0, 0, " + colorScale(d.value) + ")"
+            })
             .remove();
-        svg.selectAll("text").data(dataSet, d => d.key).exit()
+        bars.transition().duration(removeDuration).attr({
+            x: (d, i) => xScale(i),
+            y: d => h - yScale(d.value),
+            width: xScale.rangeBand(),
+            height: d => yScale(d.value),
+            fill: d => "rgb(0, 0, " + colorScale(d.value) + ")"
+        });
+
+
+        const labels = svg.selectAll("text").data(dataSet, d => d.key);
+        labels.exit()
             .transition().duration(removeDuration)
             .attr("x", -xScale.rangeBand() / 2)
             .remove();
+        labels.transition().duration(addDuration).attr({
+            x: (d, i) => xScale(i) + xScale.rangeBand() / 2,
+            y: d => h - yScale(d.value) + 14
+        })
+
     });
