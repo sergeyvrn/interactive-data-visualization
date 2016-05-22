@@ -75,9 +75,21 @@ d3.select("p")
         svg.selectAll("circle")
             .data(dataSet)
             .transition().duration(1000)
+            .each("start", function () {
+                d3.select(this)
+                    .attr({
+                        fill: "magenta",
+                        r: 3
+                    });
+            })
             .attr({
                 cx: d => xScale(d[0]),
                 cy: d => yScale(d[1])
+            })
+            .transition().duration(1000)
+            .attr({
+                fill: "black",
+                r: 2
             });
 
         svg.select(".x.axis")
