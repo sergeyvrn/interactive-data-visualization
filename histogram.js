@@ -31,28 +31,32 @@ const svg = d3.select("body")
     .attr("height", h);
 
 const maxValue = 25;
-function newNumber() {
+function newData() {
     return {
         key: d3.max(dataSet, d => d.key) + 1,
         value: Math.floor(Math.random() * maxValue)
     }
 }
 
+const xScale = d3.scale.ordinal()
+    .domain(d3.range(dataSet.length))
+    .rangeRoundBands([0, w], 0.05);
+
+const yScale = d3.scale.linear()
+    .domain([0, d3.max(dataSet, d => d.value)])
+    .range([0, h]);
+
+const colorScale = d3.scale.linear()
+    .domain([0, d3.max(dataSet, d => d.value)])
+    .rangeRound([0, 255]);
+
 function redraw(delay, duration) {
     delay = delay || 0;
     duration = duration || 0;
 
-    const xScale = d3.scale.ordinal()
-        .domain(d3.range(dataSet.length))
-        .rangeRoundBands([0, w], 0.05);
-
-    const yScale = d3.scale.linear()
-        .domain([0, d3.max(dataSet, d => d.value)])
-        .range([0, h]);
-
-    const colorScale = d3.scale.linear()
-        .domain([0, d3.max(dataSet, d => d.value)])
-        .rangeRound([0, 255]);
+    xScale.domain(d3.range(dataSet.length));
+    yScale.domain([0, d3.max(dataSet, d => d.value)]);
+    colorScale.domain([0, d3.max(dataSet, d => d.value)]);
 
     const bars = svg.selectAll("rect").data(dataSet, d => d.key);
     bars.enter()
@@ -72,8 +76,7 @@ function redraw(delay, duration) {
         })
         .on("mouseout", function () {
             d3.select(this)
-                .transition()
-                .duration(250)
+            // .transition().duration(250)
                 .attr({
                     fill: d => "rgb(0, 0, " + colorScale(d.value) + ")"
                 })
@@ -103,13 +106,13 @@ function redraw(delay, duration) {
         .text(d => d.value)
         .style("pointer-events", "none")
         .attr({
-        x: w + xScale.rangeBand() / 2,
-        y: d => h - yScale(d.value) + 14,
-        "font-family": "sans-serif",
-        "font-size": "11px",
-        fill: "white",
-        "text-anchor": "middle"
-    });
+            x: w + xScale.rangeBand() / 2,
+            y: d => h - yScale(d.value) + 14,
+            "font-family": "sans-serif",
+            "font-size": "11px",
+            fill: "white",
+            "text-anchor": "middle"
+        });
     labels.transition().delay(delay).duration(duration).text(d => d.value).attr({
         x: (d, i) => xScale(i) + xScale.rangeBand() / 2,
         y: d => h - yScale(d.value) + 14
@@ -122,6 +125,7 @@ function redraw(delay, duration) {
 
 redraw();
 
+var isAscendingSort = false;
 d3.selectAll("input")
     .on("click", function () {
         let delay;
@@ -134,10 +138,18 @@ d3.selectAll("input")
                 delay = (d, i) => i / dataSet.length * 1000;
                 break;
             case "add":
-                dataSet.push(newNumber());
+                dataSet.push(newData());
                 break;
             case "remove":
                 dataSet.shift();
+                break;
+            case "sort":
+                dataSet = dataSet.sort((a, b) =>
+                    isAscendingSort
+                        ? d3.ascending(a.value, b.value)
+                        : d3.descending(a.value, b.value));
+                delay = (d, i) => i / dataSet.length * 500;
+                isAscendingSort = !isAscendingSort;
                 break;
         }
         redraw(delay, 500);
