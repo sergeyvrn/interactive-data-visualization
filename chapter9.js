@@ -105,10 +105,7 @@ d3.select("#add")
         bars.transition().duration(addDuration)
             .attr({
                 x: (d, i) => xScale(i),
-                y: d => h - yScale(d),
-                width: xScale.rangeBand(),
-                height: d => yScale(d),
-                fill: d => "rgb(0, 0, " + colorScale(d) + ")"
+                width: xScale.rangeBand()
             });
 
         const labels = svg.selectAll("text").data(dataSet);
@@ -124,4 +121,18 @@ d3.select("#add")
             x: (d, i) => xScale(i) + xScale.rangeBand() / 2,
             y: d => h - yScale(d) + 14
         })
+    });
+
+const removeDuration = 500;
+d3.select("#remove")
+    .on("click", () => {
+        dataSet.shift();
+        svg.selectAll("rect").data(dataSet).exit()
+            .transition().duration(removeDuration)
+            .attr("x", w)
+            .remove();
+        svg.selectAll("text").data(dataSet).exit()
+            .transition().duration(removeDuration)
+            .attr("x", w + xScale.rangeBand() / 2)
+            .remove();
     });
