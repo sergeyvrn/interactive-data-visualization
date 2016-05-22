@@ -63,6 +63,20 @@ function redraw(delay, duration) {
             width: xScale.rangeBand(),
             height: d => yScale(d.value),
             fill: d => "rgb(0, 0, " + colorScale(d.value) + ")"
+        })
+        .on("mouseover", function () {
+            d3.select(this)
+                .attr({
+                    fill: "orange"
+                })
+        })
+        .on("mouseout", function () {
+            d3.select(this)
+                .transition()
+                .duration(250)
+                .attr({
+                    fill: d => "rgb(0, 0, " + colorScale(d.value) + ")"
+                })
         });
     bars.transition().delay(delay).duration(duration).attr({
         x: (d, i) => xScale(i),
@@ -84,7 +98,11 @@ function redraw(delay, duration) {
 
 
     const labels = svg.selectAll("text").data(dataSet, d => d.key);
-    labels.enter().append("text").text(d => d.value).attr({
+    labels.enter()
+        .append("text")
+        .text(d => d.value)
+        .style("pointer-events", "none")
+        .attr({
         x: w + xScale.rangeBand() / 2,
         y: d => h - yScale(d.value) + 14,
         "font-family": "sans-serif",
