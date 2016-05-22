@@ -4,6 +4,7 @@ var dataSet = [5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
 const w = 600;
 const h = 250;
 
+//noinspection ES6ModulesDependencies
 const xScale = d3.scale.ordinal()
     .domain(d3.range(dataSet.length))
     .rangeRoundBands([0, w], 0.05);
@@ -46,7 +47,6 @@ d3.select("p")
         dataSet = [11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
             5, 10, 13, 19, 21, 25, 22, 18, 15, 13];
 
-        //Update all rects
         svg.selectAll("rect")
             .data(dataSet)
             .transition()
