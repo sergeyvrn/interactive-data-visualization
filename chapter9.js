@@ -1,3 +1,5 @@
+d3 = d3 || {};
+
 var dataSet = [5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
     11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
 
@@ -12,6 +14,10 @@ const xScale = d3.scale.ordinal()
 const yScale = d3.scale.linear()
     .domain([0, d3.max(dataSet)])
     .range([0, h]);
+
+const colorScale = d3.scale.linear()
+    .domain([0, d3.max(dataSet)])
+    .rangeRound([0, 255]);
 
 const svg = d3.select("body")
     .append("svg")
@@ -42,20 +48,17 @@ svg.selectAll("text")
         "text-anchor": "middle"
     });
 
-d3.select("p")
+const maxValue = 25;
+function newNumber() {
+    return Math.floor(Math.random() * maxValue);
+}
+
+d3.select("#update")
     .on("click", () => {
-        const dataLength = dataSet.length;
-        dataSet = [];
-        for (let i = 0; i < dataLength; i++) {
-            const maxValue = 100;
-            var newNumber = Math.floor(Math.random() * maxValue);
-            dataSet.push(newNumber);
-        }
+        dataSet = dataSet.map(newNumber);
 
         yScale.domain([0, d3.max(dataSet)]);
-        const colorScale = d3.scale.linear()
-            .domain([0, d3.max(dataSet)])
-            .rangeRound([0, 255]);
+        colorScale.domain([0, d3.max(dataSet)]);
 
         svg.selectAll("rect")
             .data(dataSet)
@@ -76,15 +79,49 @@ d3.select("p")
             .delay((d, i) => i / dataSet.length * 1000)
             .duration(500)
             .ease("linear")
-            .text(function (d) {
-                return d;
-            })
             .attr({
                 x: (d, i) => xScale(i) + xScale.rangeBand() / 2,
-                y: d => h - yScale(d) + 14,
-                "font-family": "sans-serif",
-                "font-size": "11px",
-                fill: "white",
-                "text-anchor": "middle"
+                y: d => h - yScale(d) + 14
             });
+    });
+
+const addDuration = 500;
+d3.select("#add")
+    .on("click", () => {
+        dataSet.push(newNumber());
+        xScale.domain(d3.range((dataSet.length)));
+        yScale.domain([0, d3.max(dataSet)]);
+
+        const bars = svg.selectAll("rect").data(dataSet);
+        bars.enter()
+            .append("rect")
+            .attr({
+                x: w,
+                y: d => h - yScale(d),
+                width: xScale.rangeBand(),
+                height: d => yScale(d),
+                fill: d => "rgb(0, 0, " + colorScale(d) + ")"
+            });
+        bars.transition().duration(addDuration)
+            .attr({
+                x: (d, i) => xScale(i),
+                y: d => h - yScale(d),
+                width: xScale.rangeBand(),
+                height: d => yScale(d),
+                fill: d => "rgb(0, 0, " + colorScale(d) + ")"
+            });
+
+        const labels = svg.selectAll("text").data(dataSet);
+        labels.enter().append("text").text(d => d).attr({
+            x: w + xScale.rangeBand() / 2,
+            y: d => h - yScale(d) + 14,
+            "font-family": "sans-serif",
+            "font-size": "11px",
+            fill: "white",
+            "text-anchor": "middle"
+        });
+        labels.transition().duration(addDuration).attr({
+            x: (d, i) => xScale(i) + xScale.rangeBand() / 2,
+            y: d => h - yScale(d) + 14
+        })
     });
