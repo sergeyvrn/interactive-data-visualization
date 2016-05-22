@@ -33,7 +33,7 @@ svg.selectAll("text")
     .append("text")
     .text(d => d)
     .attr({
-        x: (d, i) => xScale(i) + xScale.rangeBand()/2,
+        x: (d, i) => xScale(i) + xScale.rangeBand() / 2,
         y: d => h - yScale(d) + 14,
         "font-family": "sans-serif",
         "font-size": "11px",
@@ -43,12 +43,16 @@ svg.selectAll("text")
 
 d3.select("p")
     .on("click", () => {
-        dataSet = [ 11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
-            5, 10, 13, 19, 21, 25, 22, 18, 15, 13 ];
+        dataSet = [11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
+            5, 10, 13, 19, 21, 25, 22, 18, 15, 13];
 
         //Update all rects
         svg.selectAll("rect")
             .data(dataSet)
+            .transition()
+            .delay((d, i) => i / dataSet.length * 1000)
+            .duration(500)
+            .ease("linear")
             .attr({
                 x: (d, i) => xScale(i),
                 y: d => h - yScale(d),
@@ -58,11 +62,15 @@ d3.select("p")
             });
         svg.selectAll("text")
             .data(dataSet)
-            .text(function(d) {
+            .transition()
+            .delay((d, i) => i / dataSet.length * 1000)
+            .duration(500)
+            .ease("linear")
+            .text(function (d) {
                 return d;
             })
             .attr({
-                x: (d, i) => xScale(i) + xScale.rangeBand()/2,
+                x: (d, i) => xScale(i) + xScale.rangeBand() / 2,
                 y: d => h - yScale(d) + 14,
                 "font-family": "sans-serif",
                 "font-size": "11px",
