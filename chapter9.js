@@ -40,3 +40,33 @@ svg.selectAll("text")
         fill: "white",
         "text-anchor": "middle"
     });
+
+d3.select("p")
+    .on("click", () => {
+        dataSet = [ 11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
+            5, 10, 13, 19, 21, 25, 22, 18, 15, 13 ];
+
+        //Update all rects
+        svg.selectAll("rect")
+            .data(dataSet)
+            .attr({
+                x: (d, i) => xScale(i),
+                y: d => h - yScale(d),
+                width: xScale.rangeBand(),
+                height: d => yScale(d),
+                fill: d => "rgb(0, 0, " + (d * 10) + ")"
+            });
+        svg.selectAll("text")
+            .data(dataSet)
+            .text(function(d) {
+                return d;
+            })
+            .attr({
+                x: (d, i) => xScale(i) + xScale.rangeBand()/2,
+                y: d => h - yScale(d) + 14,
+                "font-family": "sans-serif",
+                "font-size": "11px",
+                fill: "white",
+                "text-anchor": "middle"
+            });
+    });
