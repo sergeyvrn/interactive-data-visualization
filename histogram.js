@@ -68,13 +68,24 @@ function redraw(delay, duration) {
             height: d => yScale(d.value),
             fill: d => "rgb(0, 0, " + colorScale(d.value) + ")"
         })
-        .on("mouseover", function () {
+        .on("mouseover", function (d) {
+            const xPosition = parseFloat(d3.select(this).attr("x"));
+            const yPosition = this.getBoundingClientRect().bottom;
+
+            d3.select("#tooltip")
+                .style("left", xPosition + "px")
+                .style("top", yPosition + "px")
+                .select("#value")
+                .text(d.value);
+
+            d3.select("#tooltip").classed("hidden", false);
             d3.select(this)
                 .attr({
                     fill: "orange"
                 })
         })
         .on("mouseout", function () {
+            d3.select("#tooltip").classed("hidden", true);
             d3.select(this)
             // .transition().duration(250)
                 .attr({
